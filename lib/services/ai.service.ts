@@ -10,6 +10,24 @@ import { SECTION_REGISTRY } from "@/lib/sections/registry";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
+// Tried in order; if a model errors (e.g. 429 quota exceeded), fall back to the next one.
+const MODEL_FALLBACK_CHAIN = ["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+
+async function generateContentWithFallback(prompt: string): Promise<string> {
+  let lastError: unknown;
+  for (const modelName of MODEL_FALLBACK_CHAIN) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (error) {
+      console.error(`AI model "${modelName}" failed, trying next fallback:`, error);
+      lastError = error;
+    }
+  }
+  throw lastError;
+}
+
 function generateId(): string {
   return `sec_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
 }
@@ -46,8 +64,6 @@ export async function generateFullLayout(
   tenantId: string,
   tenantHostname: string,
 ): Promise<RestaurantLayout> {
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const tenantContext = request.tenantData
     ? `
 Restaurant Business Data:
@@ -85,8 +101,7 @@ Generate a complete layout JSON with the following structure:
   "seo": { "title": string, "description": string }
 }`;
 
-  const result = await model.generateContent(userPrompt);
-  const text = result.response.text();
+  const text = await generateContentWithFallback(userPrompt);
 
   // Parse JSON — strip markdown fences if present
   const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
@@ -136,8 +151,6 @@ export async function generateSectionContent(
   const meta = SECTION_REGISTRY.find((s) => s.type === sectionType);
   if (!meta) throw new Error(`Unknown section type: ${sectionType}`);
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
   const prompt = `You are a restaurant web copywriter. Generate content for a "${meta.label}" section.
 
 Restaurant context:
@@ -152,8 +165,7 @@ ${JSON.stringify(meta.defaultProps, null, 2)}
 
 Make the content feel premium, authentic, and specific to this restaurant. Use Vietnamese language. Return ONLY JSON, no markdown.`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = await generateContentWithFallback(prompt);
   const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
 
   return JSON.parse(cleaned);
