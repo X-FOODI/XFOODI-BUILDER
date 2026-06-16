@@ -4,14 +4,14 @@ import { useState } from "react";
 import { useEditorStore } from "@/lib/store/editor-store";
 import type { SectionConfig, LayoutTheme, LayoutSEO } from "@/lib/types/layout";
 import { getDefaultProps } from "@/lib/sections/registry";
-import { Check, Star, Soup, Fish, Wine, Flame, Coffee, Waves } from "lucide-react";
+import { Soup, Fish, Wine, Flame, Coffee, Waves } from "lucide-react";
 
 interface Template {
   id: string;
   name: string;
   description: string;
   category: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
   theme: LayoutTheme;
   seo: LayoutSEO;
   sections: SectionConfig[];
@@ -123,7 +123,7 @@ const TEMPLATES: Template[] = [
 ];
 
 export default function TemplatesPanel() {
-  const { applyTemplate, sections, theme } = useEditorStore();
+  const { applyTemplate } = useEditorStore();
   const [activeCategory, setActiveCategory] = useState<string>("Tất cả");
 
   const categories = ["Tất cả", "Món Việt", "Món Á", "Món Âu", "Cà Phê"];

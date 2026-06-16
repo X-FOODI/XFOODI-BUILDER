@@ -61,7 +61,8 @@ export function getIconComponent(iconNameOrEmoji: string): LucideIconComponent {
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join("");
 
-  const IconComp = (Icons as any)[formattedName] || (Icons as any)[name];
+  const IconsRecord = Icons as unknown as Record<string, LucideIconComponent>;
+  const IconComp = IconsRecord[formattedName] || IconsRecord[name];
   
   if (IconComp) return IconComp;
   

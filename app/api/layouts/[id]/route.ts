@@ -29,24 +29,13 @@ export async function PUT(
     const { id } = await params;
     const body = await req.json();
 
-    try {
-      const success = await updateLayout(id, body);
+    const success = await updateLayout(id, body);
 
-      if (!success) {
-        if (id.startsWith("mock_")) {
-          return NextResponse.json({ success: true, warning: "Offline mock update success" });
-        }
-        return NextResponse.json({ error: "Layout not found" }, { status: 404 });
-      }
-
-      return NextResponse.json({ success: true });
-    } catch (dbErr) {
-      console.warn("Database update failed, falling back to mock save:", dbErr);
-      return NextResponse.json({ 
-        success: true, 
-        warning: "Offline fallback mode: database offline" 
-      });
+    if (!success) {
+      return NextResponse.json({ error: "Layout not found" }, { status: 404 });
     }
+
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Failed to update layout due to error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
@@ -60,24 +49,13 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    try {
-      const success = await deleteLayout(id);
+    const success = await deleteLayout(id);
 
-      if (!success) {
-        if (id.startsWith("mock_")) {
-          return NextResponse.json({ success: true, warning: "Offline mock delete success" });
-        }
-        return NextResponse.json({ error: "Layout not found" }, { status: 404 });
-      }
-
-      return NextResponse.json({ success: true });
-    } catch (dbErr) {
-      console.warn("Database delete failed, falling back to mock save:", dbErr);
-      return NextResponse.json({ 
-        success: true, 
-        warning: "Offline fallback mode: database offline" 
-      });
+    if (!success) {
+      return NextResponse.json({ error: "Layout not found" }, { status: 404 });
     }
+
+    return NextResponse.json({ success: true });
   } catch (error: unknown) {
     console.error("Failed to delete layout due to error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";

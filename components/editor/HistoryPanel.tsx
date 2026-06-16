@@ -1,7 +1,7 @@
 "use client";
 
 import { useEditorStore } from "@/lib/store/editor-store";
-import { History, Clock, ArrowLeft, ArrowRight, RotateCcw, AlertTriangle } from "lucide-react";
+import { History, Clock, ArrowRight, RotateCcw, AlertTriangle } from "lucide-react";
 
 export default function HistoryPanel() {
   const { history, historyIndex, jumpToHistory, undo, redo } = useEditorStore();

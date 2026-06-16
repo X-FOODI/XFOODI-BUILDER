@@ -7,24 +7,13 @@ import { publishLayout } from "@/lib/services/layout.service";export async funct
   try {
     const { id } = await params;
 
-    try {
-      const success = await publishLayout(id);
+    const success = await publishLayout(id);
 
-      if (!success) {
-        if (id.startsWith("mock_")) {
-          return NextResponse.json({ success: true, message: "Offline mock publish success" });
-        }
-        return NextResponse.json({ error: "Layout not found" }, { status: 404 });
-      }
-
-      return NextResponse.json({ success: true, message: "Layout published" });
-    } catch (dbErr) {
-      console.warn("Database publish failed, falling back to mock save:", dbErr);
-      return NextResponse.json({ 
-        success: true, 
-        message: "Offline fallback mode: database offline" 
-      });
+    if (!success) {
+      return NextResponse.json({ error: "Layout not found" }, { status: 404 });
     }
+
+    return NextResponse.json({ success: true, message: "Layout published" });
   } catch (error: unknown) {
     console.error("Failed to publish layout due to error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";

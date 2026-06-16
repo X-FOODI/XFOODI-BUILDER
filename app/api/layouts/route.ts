@@ -26,17 +26,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "tenantId is required" }, { status: 400 });
     }
 
-    try {
-      const id = await createLayout(body);
-      return NextResponse.json({ id }, { status: 201 });
-    } catch (dbErr) {
-      console.warn("Database create failed, falling back to mock layout save:", dbErr);
-      const mockId = `mock_layout_${Date.now()}`;
-      return NextResponse.json({ 
-        id: mockId, 
-        warning: "Offline fallback mode: database offline" 
-      }, { status: 201 });
-    }
+    const id = await createLayout(body);
+    return NextResponse.json({ id }, { status: 201 });
   } catch (error: unknown) {
     console.error("Failed to create layout due to error:", error);
     const message = error instanceof Error ? error.message : "Internal Server Error";
