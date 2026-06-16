@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+
 import { useEditorStore } from "@/lib/store/editor-store";
 import { Save, Eye, Undo2, Redo2, Monitor, Smartphone, Upload, Sparkles, Sun, Moon } from "lucide-react";
 
@@ -12,11 +12,7 @@ export default function EditorToolbar() {
     undo, redo, historyIndex, history, status, generating,
   } = useEditorStore();
 
-  const [isDarkMode, setIsDarkMode] = useState(theme.mode === "dark");
-
-  useEffect(() => {
-    setIsDarkMode(theme.mode === "dark");
-  }, [theme.mode]);
+  const isDarkMode = theme.mode === "dark";
 
   const toggleTheme = () => {
     const newMode = theme.mode === "dark" ? "light" : "dark";

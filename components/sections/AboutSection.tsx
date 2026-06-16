@@ -1,7 +1,7 @@
 "use client";
 
 import type { AboutProps } from "@/lib/types/layout";
-import { IconRenderer } from "@/lib/icons";
+
 
 export default function AboutSection({ props }: { props: Record<string, unknown> }) {
   const p = props as unknown as AboutProps;

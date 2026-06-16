@@ -78,8 +78,10 @@ export default function EditorCanvas() {
           boxShadow: previewOnly ? "none" : "0 4px 24px rgba(0,0,0,0.2)",
           flexShrink: 0,
           fontFamily: theme.fontFamily || "Inter, sans-serif",
-          ["--primary" as any]: theme.primaryColor || "#FF380B",
-          ["--primary-light" as any]: hexToRgba(theme.primaryColor || "#FF380B", 0.15),
+          ...({
+            "--primary": theme.primaryColor || "#FF380B",
+            "--primary-light": hexToRgba(theme.primaryColor || "#FF380B", 0.15),
+          } as React.CSSProperties),
         }}
       >
         {sections.map((section, index) => {
