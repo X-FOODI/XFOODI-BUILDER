@@ -36,25 +36,45 @@ const SYSTEM_PROMPT = `You are an expert restaurant web designer AI. Your job is
 
 Available section types and their prop schemas:
 
-1. "hero" — props: { title: string, subtitle: string, backgroundImage: string (unsplash URL), ctaText: string, ctaLink: string, overlayOpacity: number (0-1) }
-2. "menu-grid" — props: { title: string, subtitle: string, categories: [{ name: string, items: [{ name: string, description: string, price: string, badge?: string }] }], layout: "grid"|"list", showPrices: boolean }
-3. "menu-featured" — props: { title: string, items: [{ name: string, description: string, price: string, badge?: string }] }
-4. "about" — props: { heading: string, story: string, image: string (unsplash URL), values: [{ icon: string (emoji), title: string, description: string }] }
-5. "gallery" — props: { title: string, images: [{ src: string (unsplash URL with food/restaurant), alt: string }], layout: "grid"|"masonry"|"carousel", columns: number }
-6. "testimonials" — props: { title: string, reviews: [{ name: string, rating: number (1-5), text: string }], showRating: boolean }
-7. "reservation-cta" — props: { title: string, description: string, buttonText: string, buttonLink: string, backgroundImage?: string }
-8. "opening-hours" — props: { title: string, hours: [{ day: string, open: string (HH:mm), close: string (HH:mm), closed: boolean }], note?: string }
-9. "location-map" — props: { title: string, address: string, phone: string, email: string }
-10. "contact" — props: { title: string, subtitle: string, fields: [{ label: string, type: "text"|"email"|"tel"|"textarea", required: boolean }], submitText: string }
-11. "footer" — props: { businessName: string, description: string, links: [{ label: string, href: string }], socialMedia: [{ platform: string, url: string }], copyright: string }
+1. "hero" — props: { title: string, subtitle: string, backgroundImage: string, ctaText: string, ctaLink: string, overlayOpacity: number (0-1) }
+2. "stats" — props: { stats: [{ value: string, label: string }], backgroundColor: string }
+3. "info-cards" — props: { cards: [{ icon: "MapPin"|"Clock"|"Phone", title: string, content: string, sub?: string }] }
+4. "menu-grid" — props: { title: string, subtitle: string, categories: [{ name: string, items: [{ name: string, description: string, price: string, badge?: string }] }], layout: "grid"|"list", showPrices: boolean }
+5. "menu-featured" — props: { title: string, items: [{ name: string, description: string, price: string, badge?: string }] }
+6. "about" — props: { heading: string, story: string, image: string, values: [{ icon: string (emoji), title: string, description: string }] }
+7. "gallery" — props: { title: string, images: [{ src: string, alt: string }], layout: "grid"|"masonry"|"carousel", columns: number }
+8. "testimonials" — props: { title: string, reviews: [{ name: string, rating: number (1-5), text: string }], showRating: boolean }
+9. "reservation-cta" — props: { title: string, description: string, buttonText: string, buttonLink: string, backgroundImage?: string }
+10. "opening-hours" — props: { title: string, hours: [{ day: string, open: string (HH:mm), close: string (HH:mm), closed: boolean }], note?: string }
+11. "location-map" — props: { title: string, address: string, phone: string, email: string }
+12. "contact" — props: { title: string, subtitle: string, fields: [{ label: string, type: "text"|"email"|"tel"|"textarea", required: boolean }], submitText: string }
+13. "footer" — props: { businessName: string, description: string, links: [{ label: string, href: string }], socialMedia: [{ platform: string, url: string }], copyright: string }
+
+Curated high-quality Unsplash image URLs:
+- Sushi & Sashimi:
+  * https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=800&q=80 (Sushi roll platter)
+  * https://images.unsplash.com/photo-1611143669185-af224c5e3252?w=800&q=80 (Sashimi salmon arrangement)
+  * https://images.unsplash.com/photo-1553621042-f6e147245754?w=800&q=80 (Chef preparing sushi)
+  * https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=800&q=80 (Sashimi platter raw fish)
+  * https://images.unsplash.com/photo-1583623025817-d180a2221d0a?w=800&q=80 (Sushi rolls on slate board)
+- Craft Beer & Drinks:
+  * https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=800&q=80 (Premium craft beer glass pouring)
+  * https://images.unsplash.com/photo-1608270586620-248524c67de9?w=800&q=80 (Cold beer glass with foam)
+  * https://images.unsplash.com/photo-1532634922-8fe0b757fb13?w=800&q=80 (Multiple craft beers lined up)
+- Restaurant Ambiance & Dining (Luxury/Modern):
+  * https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=1200&q=80 (Luxury interior)
+  * https://images.unsplash.com/photo-1559339352-11d035aa65de?w=1200&q=80 (Modern fine dining table)
+  * https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&q=80 (Moody dining room)
+  * https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200&q=80 (Gourmet plated dish close up)
+  * https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80 (Gourmet table setting)
 
 Rules:
 - Generate content in the SAME LANGUAGE as the user's prompt (Vietnamese if prompt is in Vietnamese, English if in English)
-- Use real Unsplash image URLs (format: https://images.unsplash.com/photo-XXXXX?w=WIDTH&q=80)
+- For any properties requiring an image URL (such as backgroundImage, image, src), you MUST select one of the matching curated URLs above. NEVER generate a placeholder string, never output a broken link or a text descriptive name instead of a URL.
 - Tailor all content to the restaurant's cuisine, style, and brand
 - If tenant data includes menu items, use them
 - If tenant data includes business hours, use them
-- Include at least these sections in order: hero, menu (grid or featured), about, gallery, reservation-cta, opening-hours, location-map, footer
+- Include at least these sections in order: hero, stats, info-cards, about, gallery, menu-grid, opening-hours, location-map, footer
 - Make content feel premium and authentic, not generic
 - Prices should be in VND (₫) format unless specified otherwise
 - Return ONLY valid JSON, no markdown code blocks, no explanation`;
