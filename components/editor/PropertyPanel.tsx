@@ -179,6 +179,76 @@ export default function PropertyPanel() {
       );
     }
 
+    if (key === "links" && Array.isArray(value)) {
+      const linkList = value as { label: string; href: string }[];
+      return (
+        <div key={path} className="mb-4 p-4 rounded-xl border" style={{ borderColor: "var(--border)", background: "var(--bg-base)" }}>
+          <div className="flex items-center justify-between mb-3">
+            <label className="label font-bold mb-0" style={{ fontSize: 13, color: "var(--text-primary)" }}>
+              Navigation Links
+            </label>
+            <button
+              onClick={() => {
+                const updated = [...linkList, { label: "Link mới", href: "#" }];
+                handleChange(key, updated);
+              }}
+              className="text-xs px-2.5 py-1 rounded bg-[var(--primary)] text-white hover:opacity-90 font-bold"
+              style={{ cursor: "pointer", border: "none" }}
+            >
+              + Thêm link
+            </button>
+          </div>
+          <div className="flex flex-col gap-2">
+            {linkList.map((link, idx) => (
+              <div key={idx} className="flex gap-2 items-center p-3 rounded-lg border relative" style={{ borderColor: "var(--border)", background: "var(--bg-elevated)" }}>
+                <div className="flex-1 flex flex-col gap-2">
+                  <div>
+                    <label className="text-[10px] font-bold text-[var(--text-secondary)] block mb-0.5 uppercase tracking-wider">Tên nhãn (Label)</label>
+                    <input
+                      className="input text-xs"
+                      style={{ padding: "6px 10px" }}
+                      placeholder="Ví dụ: Thực Đơn"
+                      value={link.label}
+                      onChange={(e) => {
+                        const updated = [...linkList];
+                        updated[idx] = { ...updated[idx], label: e.target.value };
+                        handleChange(key, updated);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-[var(--text-secondary)] block mb-0.5 uppercase tracking-wider">Đường dẫn (URL)</label>
+                    <input
+                      className="input text-xs"
+                      style={{ padding: "6px 10px" }}
+                      placeholder="Ví dụ: #menu"
+                      value={link.href}
+                      onChange={(e) => {
+                        const updated = [...linkList];
+                        updated[idx] = { ...updated[idx], href: e.target.value };
+                        handleChange(key, updated);
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    const updated = linkList.filter((_, i) => i !== idx);
+                    handleChange(key, updated);
+                  }}
+                  className="px-2 py-1 rounded text-red-500 hover:bg-red-500/10 font-bold text-xs"
+                  style={{ cursor: "pointer", border: "none", background: "transparent" }}
+                  title="Xóa link"
+                >
+                  Xóa
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
     // Skip rendering arrays and objects (too complex for inline editing)
     if (Array.isArray(value)) {
       return (

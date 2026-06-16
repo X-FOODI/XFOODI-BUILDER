@@ -8,42 +8,61 @@ export default function HeaderSection({ props }: { props: Record<string, unknown
 
   return (
     <header 
-      className="py-4 px-6 md:px-12 flex items-center justify-between border-b transition-colors duration-300 w-full"
       style={{ 
-        background: "var(--bg-surface, #FFFFFF)", 
-        borderColor: "var(--border, #E2E8F0)",
+        padding: "16px 24px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        background: "var(--bg-card, var(--bg-surface, #FFFFFF))", 
+        borderBottom: "1px solid var(--border, #E2E8F0)",
+        backdropFilter: "blur(20px)",
+        height: 72,
+        width: "100%",
+        boxSizing: "border-box",
       }}
     >
-      <div className="max-w-6xl w-full mx-auto flex items-center justify-between gap-4">
+      <div style={{ maxWidth: 1200, margin: "0 auto", width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         {/* Logo and Business Name */}
-        <div className="flex items-center gap-3">
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           {p.logoUrl ? (
-            <div className="w-10 h-10 rounded-lg overflow-hidden border" style={{ borderColor: "var(--border)" }}>
-              <img src={p.logoUrl} alt={p.businessName} className="w-full h-full object-cover" />
+            <div style={{ width: 40, height: 40, borderRadius: 8, overflow: "hidden", border: "1px solid var(--border, #E2E8F0)" }}>
+              <img src={p.logoUrl} alt={p.businessName} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
           ) : (
             <div 
-              className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-lg text-white"
-              style={{ background: "var(--primary, #FF380B)" }}
+              style={{ 
+                width: 40, 
+                height: 40, 
+                borderRadius: 8, 
+                display: "flex", 
+                alignItems: "center", 
+                justifyContent: "center", 
+                fontWeight: "bold", 
+                fontSize: 18, 
+                color: "#fff",
+                background: "var(--primary, #FF380B)",
+              }}
             >
               {p.businessName ? p.businessName.charAt(0).toUpperCase() : "R"}
             </div>
           )}
-          <span className="font-extrabold text-lg tracking-tight" style={{ color: "var(--text-primary, #0F172A)" }}>
-            {p.businessName || "XFoodi Restaurant"}
+          <span style={{ fontWeight: 800, fontSize: 18, color: "var(--text-primary, #0F172A)" }}>
+            {p.businessName || "Restaurant"}
           </span>
         </div>
 
         {/* Navigation Links */}
-        <nav className="hidden md:flex items-center gap-6">
+        <nav style={{ display: "flex", alignItems: "center", gap: 24 }} className="hidden md:flex">
           {links.map((link, i) => (
             <a
               key={i}
               href={link.href || "#"}
-              className="text-sm font-semibold transition-colors duration-200 hover:opacity-80"
               style={{ 
+                fontSize: 14,
+                fontWeight: 600,
                 color: "var(--text-secondary, #64748B)",
                 textDecoration: "none",
+                transition: "color 0.2s",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.color = "var(--primary, #FF380B)";
@@ -57,27 +76,32 @@ export default function HeaderSection({ props }: { props: Record<string, unknown
           ))}
         </nav>
 
-        {/* Call to Action Button */}
-        <div className="flex items-center gap-4">
-          <span className="hidden sm:inline-flex items-center text-xs font-semibold gap-1.5 px-2.5 py-1 rounded-md border" style={{ borderColor: "var(--border)", color: "var(--text-secondary)" }}>
-            <span className="w-2 h-2 rounded-full" style={{ background: "#22c55e" }} />
+        {/* Action Button */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <span style={{ display: "inline-flex", alignItems: "center", fontSize: 12, fontWeight: 600, gap: 6, padding: "4px 10px", borderRadius: 6, border: "1px solid var(--border, #E2E8F0)", color: "var(--text-secondary, #64748B)" }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e" }} />
             Open Now
           </span>
           
           {p.ctaText && (
             <a
               href={p.ctaLink || "#"}
-              className="transition-all hover:-translate-y-0.5 hover:shadow-md"
               style={{
                 background: "var(--primary, #FF380B)",
                 color: "#fff",
                 textDecoration: "none",
-                boxShadow: "0 4px 12px var(--primary-light, rgba(255, 56, 11, 0.2))",
-                padding: "12px 28px",
+                padding: "10px 24px",
                 borderRadius: "8px",
                 fontSize: "14px",
                 fontWeight: "bold",
-                display: "inline-block"
+                display: "inline-block",
+                transition: "transform 0.2s",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none";
               }}
             >
               {p.ctaText}
