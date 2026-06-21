@@ -44,10 +44,11 @@ export default function EditorCanvas() {
     );
   }
 
-  const handleDragStart = (e: React.DragEvent, index: number) => {
+  const handleDragStart = (e: React.DragEvent, index: number, sectionId: string) => {
     if (previewOnly) return;
     e.dataTransfer.setData("text/plain", String(index));
-    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("sectionId", sectionId);
+    e.dataTransfer.effectAllowed = "copyMove";
   };
 
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
@@ -104,7 +105,7 @@ export default function EditorCanvas() {
                   if (!previewOnly) selectSection(section.id);
                 }}
                 draggable={!previewOnly}
-                onDragStart={(e) => handleDragStart(e, index)}
+                onDragStart={(e) => handleDragStart(e, index, section.id)}
                 onDrop={(e) => handleDrop(e, index)}
                 onDragOver={handleDragOver}
                 style={{

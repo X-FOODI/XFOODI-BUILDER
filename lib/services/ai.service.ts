@@ -190,3 +190,36 @@ Make the content feel premium, authentic, and specific to this restaurant. Use V
 
   return JSON.parse(cleaned);
 }
+
+export async function editSectionWithAI(
+  sectionType: string,
+  instruction: string,
+  currentProps: Record<string, unknown>,
+): Promise<Record<string, unknown>> {
+  const meta = SECTION_REGISTRY.find((s) => s.type === sectionType);
+  if (!meta) throw new Error(`Unknown section type: ${sectionType}`);
+
+  const prompt = `You are a restaurant web developer and copywriter.
+You need to modify the following "${meta.label}" section according to the user's instructions.
+
+Current section props:
+${JSON.stringify(currentProps, null, 2)}
+
+User's instruction: "${instruction}"
+
+Prop schema details for reference:
+${JSON.stringify(meta.defaultProps, null, 2)}
+
+Instructions:
+1. Read the user's instruction and modify the current props accordingly.
+2. Only update/change what the user requested, keeping other props intact or aligned with the restaurant style.
+3. Make sure all images used are valid. If the user asks for new images, you can select appropriate Unsplash URLs or keep current ones.
+4. Respond ONLY with the updated JSON props object matching the schema. No markdown code blocks, no explanations, no text outside the JSON.
+5. Generate content in Vietnamese.`;
+
+  const text = await generateContentWithFallback(prompt);
+  const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+
+  return JSON.parse(cleaned);
+}
+
