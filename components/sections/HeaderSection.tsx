@@ -88,66 +88,47 @@ export default function HeaderSection({ props }: { props: Record<string, unknown
           ))}
         </nav>
 
-        {/* Right: Search, Avatar, Lang, Theme */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          {/* Search Box */}
-          <div 
-            style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              background: "var(--bg-base, #F8FAFC)", 
-              border: "1px solid var(--border, #E2E8F0)",
-              borderRadius: "9999px",
-              padding: "6px 14px",
-              width: 150,
-            }}
-            className="hidden md:flex"
-          >
-            <svg style={{ width: 14, height: 14, color: "var(--text-muted, #94A3B8)", marginRight: 6 }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input 
-              type="text" 
-              placeholder="Tìm MXH" 
-              style={{ 
-                border: "none", 
-                background: "transparent", 
-                fontSize: 12, 
-                color: "var(--text-primary, #0F172A)", 
-                outline: "none",
-                width: "100%",
-              }} 
-            />
-          </div>
+        {/* Right: Open Now badge + CTA button (mirrors live PublishedHeader) */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          {/* Open Now badge */}
+          <span style={{
+            display: "inline-flex",
+            alignItems: "center",
+            fontSize: 12,
+            fontWeight: 600,
+            gap: 6,
+            padding: "4px 12px",
+            borderRadius: 6,
+            border: "1px solid var(--border, #E2E8F0)",
+            color: "var(--text-secondary, #64748B)",
+            whiteSpace: "nowrap",
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", flexShrink: 0 }} />
+            Open Now
+          </span>
 
-          {/* User Avatar */}
-          <div 
-            style={{ 
-              width: 32, 
-              height: 32, 
-              borderRadius: "50%", 
-              background: "#3E5C6B", 
-              color: "#FFFFFF", 
-              display: "flex", 
-              alignItems: "center", 
-              justifyContent: "center",
-              fontSize: 13,
-              fontWeight: 700,
-              cursor: "pointer",
-            }}
-          >
-            N
-          </div>
-
-          {/* Language Selector */}
-          <div style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
-            <span style={{ fontSize: 16 }}>🇻🇳</span>
-            <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-primary, #0F172A)" }}>VI</span>
-            <svg style={{ width: 10, height: 10, color: "var(--text-muted, #94A3B8)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </div>
-
-          {/* Theme Toggle (Mock icon) */}
-          <div style={{ cursor: "pointer", display: "flex", alignItems: "center" }}>
-            <svg style={{ width: 16, height: 16, color: "var(--text-muted, #64748B)" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-          </div>
+          {/* CTA button */}
+          {p.ctaText && (
+            <a
+              href={p.ctaLink || "#"}
+              style={{
+                background: "var(--primary, #FF380B)",
+                color: "#fff",
+                textDecoration: "none",
+                padding: "9px 20px",
+                borderRadius: "8px",
+                fontSize: 13,
+                fontWeight: 700,
+                display: "inline-block",
+                whiteSpace: "nowrap",
+                transition: "opacity 0.2s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.85"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
+            >
+              {p.ctaText}
+            </a>
+          )}
         </div>
       </div>
     </header>
