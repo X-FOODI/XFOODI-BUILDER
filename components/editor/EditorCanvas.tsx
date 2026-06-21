@@ -44,10 +44,11 @@ export default function EditorCanvas() {
     );
   }
 
-  const handleDragStart = (e: React.DragEvent, index: number) => {
+  const handleDragStart = (e: React.DragEvent, index: number, sectionId: string) => {
     if (previewOnly) return;
     e.dataTransfer.setData("text/plain", String(index));
-    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("sectionId", sectionId);
+    e.dataTransfer.effectAllowed = "copyMove";
   };
 
   const handleDrop = (e: React.DragEvent, targetIndex: number) => {
@@ -74,7 +75,7 @@ export default function EditorCanvas() {
           maxWidth: "100%",
           background: "var(--bg-surface)",
           borderRadius: previewOnly ? 0 : 12,
-          overflow: "hidden",
+          overflow: "visible",
           boxShadow: previewOnly ? "none" : "0 4px 24px rgba(0,0,0,0.2)",
           flexShrink: 0,
           fontFamily: theme.fontFamily || "Inter, sans-serif",
@@ -84,29 +85,40 @@ export default function EditorCanvas() {
           } as React.CSSProperties),
         }}
       >
-        {sections.map((section, index) => {
-          // If in previewOnly mode, completely skip rendering invisible sections
-          if (previewOnly && !section.visible) return null;
+        {(() => {
+          const visibleIndices = sections.map((s, i) => (s.visible || previewOnly) ? i : -1).filter(i => i !== -1);
+          const firstVisibleIndex = visibleIndices.length > 0 ? visibleIndices[0] : -1;
+          const lastVisibleIndex = visibleIndices.length > 0 ? visibleIndices[visibleIndices.length - 1] : -1;
 
-          const meta = getSectionMeta(section.type);
-          const isSelected = selectedSectionId === section.id;
+          return sections.map((section, index) => {
+            // If in previewOnly mode, completely skip rendering invisible sections
+            if (previewOnly && !section.visible) return null;
 
-          return (
-            <div
-              key={section.id}
-              className={`section-wrapper ${isSelected && !previewOnly ? "selected" : ""} ${previewOnly ? "preview-mode-active" : ""}`}
-              onClick={() => {
-                if (!previewOnly) selectSection(section.id);
-              }}
-              draggable={!previewOnly}
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDrop={(e) => handleDrop(e, index)}
-              onDragOver={handleDragOver}
-              style={{
-                opacity: (section.visible || previewOnly) ? 1 : 0.4,
-                position: "relative",
-              }}
-            >
+            const meta = getSectionMeta(section.type);
+            const isSelected = selectedSectionId === section.id;
+
+            return (
+              <div
+                key={section.id}
+                className={`section-wrapper ${isSelected && !previewOnly ? "selected" : ""} ${previewOnly ? "preview-mode-active" : ""}`}
+                onClick={() => {
+                  if (!previewOnly) selectSection(section.id);
+                }}
+                draggable={!previewOnly}
+                onDragStart={(e) => handleDragStart(e, index, section.id)}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragOver={handleDragOver}
+                style={{
+                  opacity: (section.visible || previewOnly) ? 1 : 0.4,
+                  position: section.type === "header" ? "sticky" : "relative",
+                  top: section.type === "header" ? 0 : undefined,
+                  zIndex: section.type === "header" ? 40 : undefined,
+                  borderTopLeftRadius: index === firstVisibleIndex && !previewOnly ? 12 : undefined,
+                  borderTopRightRadius: index === firstVisibleIndex && !previewOnly ? 12 : undefined,
+                  borderBottomLeftRadius: index === lastVisibleIndex && !previewOnly ? 12 : undefined,
+                  borderBottomRightRadius: index === lastVisibleIndex && !previewOnly ? 12 : undefined,
+                }}
+              >
               {/* Section Label */}
               {!previewOnly && (
                 <div
@@ -158,7 +170,8 @@ export default function EditorCanvas() {
               <SectionRenderer section={section} pageAnimation={theme.pageAnimation} previewOnly={previewOnly} />
             </div>
           );
-        })}
+        });
+      })()}
       </div>
     </div>
   );

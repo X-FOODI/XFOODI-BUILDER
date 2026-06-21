@@ -25,10 +25,13 @@ export const SECTION_REGISTRY: SectionMeta[] = [
       businessName: "Restaurant Name",
       logoUrl: "",
       links: [
-        { label: "Trang Chủ", href: "#" },
-        { label: "Thực Đơn", href: "#menu" },
-        { label: "Giới Thiệu", href: "#about" },
-        { label: "Liên Hệ", href: "#contact" }
+        { label: "Sản phẩm", href: "#products" },
+        { label: "Quy trình", href: "#process" },
+        { label: "Nhà hàng", href: "#restaurants" },
+        { label: "Về chúng tôi", href: "#about" },
+        { label: "Khách hàng", href: "#customers" },
+        { label: "Liên hệ", href: "#contact" },
+        { label: "Mạng xã hội", href: "#social" }
       ],
       ctaText: "Đặt Bàn Ngay",
       ctaLink: "#reservation"
